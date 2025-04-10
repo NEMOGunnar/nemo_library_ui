@@ -8,8 +8,15 @@ import shutil  # Add this import for recursive directory removal
 import requests  # Add this import for GitHub API requests
 
 # Configure logging
+current_script_name = Path(__file__).stem  # Get the current script name without extension
+LOGFILE = Path.home() / ".nemo_app" / f"{current_script_name}.log"
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.StreamHandler(),  # Log to console
+        logging.FileHandler(LOGFILE, mode="a", encoding="utf-8"),  # Log to file
+    ],
 )
 
 # Configuration

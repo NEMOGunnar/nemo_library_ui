@@ -11,7 +11,8 @@ import socket
 import atexit
 
 # Configure logging
-LOGFILE = Path.home() / ".nemo_app" / "nemoui.log"
+current_script_name = Path(__file__).stem  # Get the current script name without extension
+LOGFILE = Path.home() / ".nemo_app" / f"{current_script_name}.log"
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
