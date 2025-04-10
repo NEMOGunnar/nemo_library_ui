@@ -26,7 +26,6 @@ PYTHON_EXE = PYTHON_DIR / "python.exe"
 
 # GitHub repository details
 GITHUB_REPO = "NEMOGunnar/nemo_library_ui"
-GITHUB_FILE_PATH = "nemo_library_ui.py"
 
 
 def ensure_python():
