@@ -1,12 +1,10 @@
 import os
 import subprocess
-import sys
 import urllib.request
 import zipfile
 from pathlib import Path
 import logging
 import shutil  # Add this import for recursive directory removal
-import hashlib  # Add this import for hashing
 import requests  # Add this import for GitHub API requests
 
 # Configure logging
