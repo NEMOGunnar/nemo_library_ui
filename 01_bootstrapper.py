@@ -160,9 +160,9 @@ def ensure_correct_file_version(filepath: str):
         """Fetches the latest commit hash for the file from GitHub."""
         try:
             response = requests.get(
-                GITHUB_API_URL=(
+                
                     f"https://api.github.com/repos/{GITHUB_REPO}/commits?path={filepath}"
-                )
+                
             )
             response.raise_for_status()
             commits = response.json()
@@ -174,8 +174,7 @@ def ensure_correct_file_version(filepath: str):
 
     def get_local_file_hash():
         """Calculates the SHA-1 hash of the local file."""
-        local_path = APP_DIR / filepath
-
+        
         if local_path.exists():
             sha1 = hashlib.sha1()
             with open(local_path, "rb") as f:
@@ -184,6 +183,7 @@ def ensure_correct_file_version(filepath: str):
             return sha1.hexdigest()
         return None
 
+    local_path = APP_DIR / filepath
     latest_commit_hash = get_latest_commit_hash()
     local_file_hash = get_local_file_hash()
 
@@ -195,7 +195,7 @@ def ensure_correct_file_version(filepath: str):
         )
         url = f"https://raw.githubusercontent.com/{GITHUB_REPO}/master/{filepath}"
         logging.info(f"Downloading from {url}...")
-        urllib.request.urlretrieve(url, app_path)
+        urllib.request.urlretrieve(url, local_path)
         logging.info("App file updated.")
 
 
