@@ -1,2 +1,6 @@
 nemo_library
 streamlit
+streamlit_option_menu
+pywebview
+cryptography
+pyinstaller

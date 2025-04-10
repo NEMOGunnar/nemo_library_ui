@@ -23,16 +23,19 @@ PYTHON_ZIP_PATH = APP_DIR / PYTHON_ZIP_NAME
 PYTHON_EXE = PYTHON_DIR / "python.exe"
 
 # Your main Streamlit app file (must exist or be downloaded separately)
-MAIN_APP_FILE = "nemo_library_ui.py"
+MAIN_APP_FILE = "start_nemo_library_ui.py"
 
 # Python packages to install
 REQUIRED_PACKAGES = [
     "streamlit",
-    "nemo-library"
+    "streamlit_option_menu",
+    "nemo-library",
+    "pywebview",
+    "cryptography",
 ]
 
 # GitHub repository details
-GITHUB_REPO = "H3rm1nat0r/nemo_library"
+GITHUB_REPO = "NEMOGunnar/nemo_library_ui"
 GITHUB_FILE_PATH = "nemo_library_ui.py"
 GITHUB_API_URL = f"https://api.github.com/repos/{GITHUB_REPO}/commits?path={GITHUB_FILE_PATH}"
 
@@ -91,7 +94,10 @@ def install_pip():
         logging.info("Pip not found or outdated. Installing pip...")
         get_pip_path = APP_DIR / "get-pip.py"
         urllib.request.urlretrieve("https://bootstrap.pypa.io/get-pip.py", get_pip_path)
-        subprocess.run([PYTHON_EXE, str(get_pip_path)], check=True)
+        subprocess.run(
+            [PYTHON_EXE, str(get_pip_path), "--no-warn-script-location"], 
+            check=True
+        )
         logging.info("Pip installation completed.")
 
 def enable_site_packages():
@@ -150,6 +156,7 @@ def ensure_correct_app_version():
     else:
         logging.info("App file is outdated or missing. Downloading the latest version...")
         url = f"https://raw.githubusercontent.com/{GITHUB_REPO}/master/{GITHUB_FILE_PATH}"
+        logging.info(f"Downloading from {url}...")
         urllib.request.urlretrieve(url, app_path)
         logging.info("App file updated.")
 
