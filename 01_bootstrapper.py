@@ -187,7 +187,7 @@ def ensure_correct_file_version(filepath: str):
 def run_app():
     """Launches the Streamlit application."""
     logging.info("Launching NEMO UI app...")
-    subprocess.run([str(PYTHON_EXE), "02_start_nemo_library_ui"], cwd=APP_DIR)
+    subprocess.run([str(PYTHON_EXE), "02_start_nemo_library_ui.py"], cwd=APP_DIR)
 
 
 def main():
