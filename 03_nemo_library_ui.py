@@ -18,7 +18,8 @@ USERNAME = "<encryption_key>"
 PROFILES_FILE = Path.home() / ".nemo_app" / "profiles.json"
 
 current_script_name = Path(__file__).stem  # Get the current script name without extension
-LOGFILE = Path.home() / ".nemo_app" / f"{current_script_name}.log"
+LOGFILE = Path.home() / ".nemo_app" / "logs" / f"{current_script_name}.log"
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",

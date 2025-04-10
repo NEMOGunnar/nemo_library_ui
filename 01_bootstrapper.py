@@ -9,7 +9,11 @@ import requests  # Add this import for GitHub API requests
 
 # Configure logging
 current_script_name = Path(__file__).stem  # Get the current script name without extension
-LOGFILE = Path.home() / ".nemo_app" / f"{current_script_name}.log"
+LOGFILE = Path.home() / ".nemo_app" / "logs" / f"{current_script_name}.log"
+
+# Ensure the directory for the log file exists
+LOGFILE.parent.mkdir(parents=True, exist_ok=True)
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
