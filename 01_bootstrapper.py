@@ -24,15 +24,6 @@ PYTHON_DIR = APP_DIR / "python"
 PYTHON_ZIP_PATH = APP_DIR / PYTHON_ZIP_NAME
 PYTHON_EXE = PYTHON_DIR / "python.exe"
 
-# Python packages to install
-REQUIRED_PACKAGES = [
-    "streamlit",
-    "streamlit_option_menu",
-    "nemo-library",
-    "pywebview",
-    "cryptography",
-]
-
 # GitHub repository details
 GITHUB_REPO = "NEMOGunnar/nemo_library_ui"
 GITHUB_FILE_PATH = "nemo_library_ui.py"
@@ -146,7 +137,9 @@ def ensure_requirements():
             "install",
             "--no-warn-script-location",
             "--no-warn-conflicts",
-            *REQUIRED_PACKAGES,
+            "--upgrade",
+            "-r",
+            str(APP_DIR / "requirements.txt"),
         ],
         check=True,
         env={**os.environ, "PYTHONWARNINGS": "ignore"},  # Suppress warnings
@@ -201,10 +194,10 @@ def run_app():
 
 def main():
     logging.info("Bootstrapping Nemo Application...")
-    # ensure_python()
-    # ensure_pip()
+    ensure_python()
+    ensure_pip()
     ensure_correct_file_version("requirements.txt")
-    # ensure_requirements()
+    ensure_requirements()
     # run_app()
 
 
