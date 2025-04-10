@@ -22,7 +22,7 @@ def log_stream(stream, level):
 
 # Start Streamlit in the background without a terminal window (Windows-specific)
 streamlit_proc = subprocess.Popen(
-    ["streamlit", "run", "nemo_library_ui.py", "--server.headless", "true", "--browser.serverAddress", "127.0.0.1"],
+    ["streamlit", "run", "nemo_library_ui.py", "--server.headless", "true", "--browser.serverAddress", "127.0.0.1","--server.port", "8501"],
     stdout=subprocess.PIPE,
     stderr=subprocess.PIPE,
      creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
@@ -34,12 +34,12 @@ Thread(target=log_stream, args=(streamlit_proc.stderr, logging.ERROR), daemon=Tr
 
 # Wait until the server is ready
 logging.info("Waiting for Streamlit to start...")
-while not is_port_open('127.0.0.1', 8502):
+while not is_port_open('127.0.0.1', 8501):
     time.sleep(0.1)
     logging.info("Waiting for Streamlit to start...")
 
 # Open Streamlit in a native window
-webview.create_window("NEMO UI", "http://127.0.0.1:8502")
+webview.create_window("NEMO UI", "http://127.0.0.1:8501")
 webview.start()
 
 # Terminate Streamlit when the window is closed
