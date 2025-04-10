@@ -39,9 +39,6 @@ REQUIRED_PACKAGES = [
 # GitHub repository details
 GITHUB_REPO = "NEMOGunnar/nemo_library_ui"
 GITHUB_FILE_PATH = "nemo_library_ui.py"
-GITHUB_API_URL = (
-    f"https://api.github.com/repos/{GITHUB_REPO}/commits?path={GITHUB_FILE_PATH}"
-)
 
 
 def ensure_python():
@@ -103,7 +100,7 @@ def ensure_python():
 
 def ensure_pip():
     """Downloads and installs pip using get-pip.py if not already installed."""
-    
+
     def check_pip_version():
         """Checks if pip is installed and up-to-date."""
         try:
@@ -159,35 +156,41 @@ def ensure_requirements():
     )
 
 
-def get_latest_commit_hash():
-    """Fetches the latest commit hash for the file from GitHub."""
-    try:
-        response = requests.get(GITHUB_API_URL)
-        response.raise_for_status()
-        commits = response.json()
-        if commits:
-            return commits[0]["sha"]
-    except Exception as e:
-        logging.warning(f"Failed to fetch latest commit hash: {e}")
-    return None
-
-
-def get_local_file_hash(file_path):
-    """Calculates the SHA-1 hash of the local file."""
-    if file_path.exists():
-        sha1 = hashlib.sha1()
-        with open(file_path, "rb") as f:
-            while chunk := f.read(8192):
-                sha1.update(chunk)
-        return sha1.hexdigest()
-    return None
-
-
-def ensure_correct_app_version():
+def ensure_correct_file_version(filepath:str):
     """Ensures the local app file matches the latest version on GitHub."""
+
+    def get_latest_commit_hash():
+        """Fetches the latest commit hash for the file from GitHub."""
+        try:
+            response = requests.get(
+                GITHUB_API_URL=(
+                    f"https://api.github.com/repos/{GITHUB_REPO}/commits?path={filepath}"
+                )
+            )
+            response.raise_for_status()
+            commits = response.json()
+            if commits:
+                return commits[0]["sha"]
+        except Exception as e:
+            logging.warning(f"Failed to fetch latest commit hash: {e}")
+        return None
+
+
+    def get_local_file_hash():
+        """Calculates the SHA-1 hash of the local file."""
+        if filepath.exists():
+            sha1 = hashlib.sha1()
+            with open(filepath, "rb") as f:
+                while chunk := f.read(8192):
+                    sha1.update(chunk)
+            return sha1.hexdigest()
+        return None
+
+
+
     app_path = APP_DIR / MAIN_APP_FILE
     latest_commit_hash = get_latest_commit_hash()
-    local_file_hash = get_local_file_hash(app_path)
+    local_file_hash = get_local_file_hash()
 
     if latest_commit_hash and latest_commit_hash == local_file_hash:
         logging.info("App file is up-to-date.")
@@ -196,7 +199,7 @@ def ensure_correct_app_version():
             "App file is outdated or missing. Downloading the latest version..."
         )
         url = (
-            f"https://raw.githubusercontent.com/{GITHUB_REPO}/master/{GITHUB_FILE_PATH}"
+            f"https://raw.githubusercontent.com/{GITHUB_REPO}/master/{filepath}"
         )
         logging.info(f"Downloading from {url}...")
         urllib.request.urlretrieve(url, app_path)
@@ -215,8 +218,8 @@ def main():
     logging.info("Bootstrapping Nemo Application...")
     ensure_python()
     ensure_pip()
+    ensure_correct_file_version("requirements.txt")  
     # ensure_requirements()
-    # ensure_correct_app_version()  # Replace the previous app download logic
     # run_app()
 
 
