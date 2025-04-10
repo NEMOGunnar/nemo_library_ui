@@ -187,9 +187,7 @@ def ensure_correct_file_version(filepath: str):
 def run_app():
     """Launches the Streamlit application."""
     logging.info("Launching NEMO UI app...")
-    subprocess.run(
-        [str(PYTHON_EXE), "-m", "streamlit", "run", MAIN_APP_FILE], cwd=APP_DIR
-    )
+    subprocess.run([str(PYTHON_EXE), "02_start_nemo_library_ui"], cwd=APP_DIR)
 
 
 def main():
@@ -198,7 +196,9 @@ def main():
     ensure_pip()
     ensure_correct_file_version("requirements.txt")
     ensure_requirements()
-    # run_app()
+    ensure_correct_file_version("02_start_nemo_library_ui.py")
+    ensure_correct_file_version("03_nemo_library_ui.py")
+    run_app()
 
 
 if __name__ == "__main__":
