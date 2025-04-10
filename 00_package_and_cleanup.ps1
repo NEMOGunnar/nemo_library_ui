@@ -1,31 +1,35 @@
 # Run PyInstaller with the provided spec file
-pyinstaller --clean --noconfirm pyinstaller_bootstrapper.spec
+pyinstaller --noconfirm --onefile --console 01_bootstrapper.py --name NemoUI
 
-# Define paths
-$distFolder = "dist"
-$exeName = "NemoLibraryUI.exe"
-$issFile = "installer_script.iss"
-$outputInstaller = "Output\NemoLibrarySetup.exe"  # Updated path to match Inno Setup output
+# sign the executable
+./ext/sign_executable.ps1
 
-# Change to the dist folder
-Set-Location $distFolder
+# # Define paths
+# $distFolder = "dist"
+# $exeName = "NemoUI.exe"
+# $setupexe = "NemoUISetup.exe"
+# $issFile = "installer_script.iss"
+# $outputInstaller = "Output\$setupexe"  # Updated path to match Inno Setup output
 
-# Return to the original directory
-Set-Location ..
+# # Change to the dist folder
+# Set-Location $distFolder
 
-# Remove the destination file if it already exists
-if (Test-Path "$distFolder\NemoLibrarySetup.exe") {
-    Remove-Item -Path "$distFolder\NemoLibrarySetup.exe" -Force -ErrorAction SilentlyContinue
-}
+# # Return to the original directory
+# Set-Location ..
 
-# Use Inno Setup to create a setup file
-& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" $issFile
+# # Remove the destination file if it already exists
+# if (Test-Path "$distFolder\$setupexe") {
+#     Remove-Item -Path "$distFolder\$setupexe.exe" -Force -ErrorAction SilentlyContinue
+# }
 
-# Move the generated installer to the dist folder
-Move-Item -Path ".\$outputInstaller" -Destination "$distFolder\NemoLibrarySetup.exe"
+# # Use Inno Setup to create a setup file
+# & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" $issFile
 
-# Remove the empty Output folder
-Remove-Item -Path "Output" -Recurse -Force -ErrorAction SilentlyContinue
+# # Move the generated installer to the dist folder
+# Move-Item -Path ".\$outputInstaller" -Destination "$distFolder\$setupexe.exe"
 
-# Remove $exeName from the dist folder
-Remove-Item -Path "$distFolder\$exeName" -Force -ErrorAction SilentlyContinue
+# # Remove the empty Output folder
+# Remove-Item -Path "Output" -Recurse -Force -ErrorAction SilentlyContinue
+
+# # Remove $exeName from the dist folder
+# Remove-Item -Path "$distFolder\$exeName" -Force -ErrorAction SilentlyContinue
