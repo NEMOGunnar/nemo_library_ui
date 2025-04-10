@@ -22,7 +22,7 @@ def log_stream(stream, level):
 
 # Start Streamlit in the background without a terminal window (Windows-specific)
 streamlit_proc = subprocess.Popen(
-    ["streamlit", "run", "nemo_library_ui.py", "--server.headless", "true", "--browser.serverAddress", "127.0.0.1","--server.port", "8501"],
+    ["streamlit", "run", "03_nemo_library_ui.py", "--server.headless", "true", "--browser.serverAddress", "127.0.0.1","--server.port", "8501"],
     stdout=subprocess.PIPE,
     stderr=subprocess.PIPE,
      creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
