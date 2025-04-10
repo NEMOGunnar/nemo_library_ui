@@ -175,13 +175,13 @@ def ensure_correct_file_version(filepath: str):
         logging.info(f"file {filepath} is up-to-date.")
     else:
         logging.info(
-            "file {filepath} is outdated or missing. Downloading the latest version..."
+            f"file {filepath} is outdated or missing. Downloading the latest version..."
         )
         url = f"https://raw.githubusercontent.com/{GITHUB_REPO}/master/{filepath}"
         logging.info(f"Downloading from {url}...")
         with open(local_path, "w", encoding="utf-8") as f:
             f.write(remote_content)
-        logging.info("App file updated.")
+        logging.info(f"file  {filepath} updated.")
 
 
 def run_app():

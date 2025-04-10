@@ -8,11 +8,10 @@ import webview
 import os
 import signal
 import socket
+import atexit
 
 # Configure logging
 LOGFILE = Path.home() / ".nemo_app" / "nemoui.log"
-
-log_file_path = os.path.expanduser("~/nemo_ui.log")
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -39,14 +38,31 @@ def get_url_from_log(stream):
     """Check if the URL is in the log stream."""
     if stream:
         port_pattern = re.compile(r"URL: http://127\.0\.0\.1:(\d+)")
-        for line in iter(stream.readline, b""):
-            decoded_line = line.decode().strip()
-            logging.info(decoded_line)  # Log the output for debugging
-            match = port_pattern.search(decoded_line)
-            if match:
-                return int(match.group(1))
+        try:
+            for line in iter(stream.readline, b""):
+                decoded_line = line.decode().strip()
+                logging.info(decoded_line)  # Log the output for debugging
+                match = port_pattern.search(decoded_line)
+                if match:
+                    return int(match.group(1))
+        except ValueError:
+            logging.error("Stream is closed or invalid.")
     return None
 
+def cleanup():
+    """Terminate the Streamlit process when the program exits."""
+    if streamlit_proc.poll() is None:  # Check if the process is still running
+        logging.info("Terminating Streamlit process...")
+        try:
+            streamlit_proc.terminate()
+            streamlit_proc.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            logging.warning("Streamlit process did not terminate in time. Forcing termination...")
+            streamlit_proc.kill()  # Forcefully kill the process
+        except Exception as e:
+            logging.error(f"Error while terminating Streamlit process: {e}")
+        else:
+            logging.info("Streamlit process terminated.")
 
 # Start Streamlit in the background without a terminal window (Windows-specific)
 streamlit_proc = subprocess.Popen(
@@ -58,14 +74,15 @@ streamlit_proc = subprocess.Popen(
         "true",
         "--browser.serverAddress",
         "127.0.0.1",
-        "--server.port",
-        "8501",
     ],
     stdout=subprocess.PIPE,
     stderr=subprocess.PIPE,
     creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
 )
 logging.info("Streamlit process started.")  
+
+# Register the cleanup function
+atexit.register(cleanup)
 
 # Start threads to log both stdout and stderr
 Thread(
@@ -94,7 +111,5 @@ webview.create_window("NEMO UI", f"http://127.0.0.1:{streamlitport}")
 webview.start()
 
 # Terminate Streamlit when the window is closed
-if os.name == "nt":
-    streamlit_proc.send_signal(signal.CTRL_BREAK_EVENT)
-else:
+if streamlit_proc.poll() is None:  # Double-check if the process is still running
     streamlit_proc.terminate()
