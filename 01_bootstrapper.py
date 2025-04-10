@@ -156,46 +156,38 @@ def ensure_requirements():
 def ensure_correct_file_version(filepath: str):
     """Ensures the local app file matches the latest version on GitHub."""
 
-    def get_latest_commit_hash():
-        """Fetches the latest commit hash for the file from GitHub."""
+    def get_remote_file_content():
+        """Fetches the content of the file from GitHub."""
         try:
-            response = requests.get(
-                
-                    f"https://api.github.com/repos/{GITHUB_REPO}/commits?path={filepath}"
-                
-            )
+            url = f"https://raw.githubusercontent.com/{GITHUB_REPO}/master/{filepath}"
+            response = requests.get(url)
             response.raise_for_status()
-            commits = response.json()
-            if commits:
-                return commits[0]["sha"]
+            return response.text
         except Exception as e:
-            logging.warning(f"Failed to fetch latest commit hash: {e}")
+            logging.warning(f"Failed to fetch remote file content: {e}")
         return None
 
-    def get_local_file_hash():
-        """Calculates the SHA-1 hash of the local file."""
-        
+    def get_local_file_content():
+        """Reads the content of the local file."""
         if local_path.exists():
-            sha1 = hashlib.sha1()
-            with open(local_path, "rb") as f:
-                while chunk := f.read(8192):
-                    sha1.update(chunk)
-            return sha1.hexdigest()
+            with open(local_path, "r", encoding="utf-8") as f:
+                return f.read()
         return None
 
     local_path = APP_DIR / filepath
-    latest_commit_hash = get_latest_commit_hash()
-    local_file_hash = get_local_file_hash()
+    remote_content = get_remote_file_content()
+    local_content = get_local_file_content()
 
-    if latest_commit_hash and latest_commit_hash == local_file_hash:
-        logging.info("App file is up-to-date.")
+    if remote_content is not None and remote_content == local_content:
+        logging.info(f"file {filepath} is up-to-date.")
     else:
         logging.info(
-            "App file is outdated or missing. Downloading the latest version..."
+            "file {filepath} is outdated or missing. Downloading the latest version..."
         )
         url = f"https://raw.githubusercontent.com/{GITHUB_REPO}/master/{filepath}"
         logging.info(f"Downloading from {url}...")
-        urllib.request.urlretrieve(url, local_path)
+        with open(local_path, "w", encoding="utf-8") as f:
+            f.write(remote_content)
         logging.info("App file updated.")
 
 
@@ -209,8 +201,8 @@ def run_app():
 
 def main():
     logging.info("Bootstrapping Nemo Application...")
-    ensure_python()
-    ensure_pip()
+    # ensure_python()
+    # ensure_pip()
     ensure_correct_file_version("requirements.txt")
     # ensure_requirements()
     # run_app()
