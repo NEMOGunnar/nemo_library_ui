@@ -24,9 +24,6 @@ PYTHON_DIR = APP_DIR / "python"
 PYTHON_ZIP_PATH = APP_DIR / PYTHON_ZIP_NAME
 PYTHON_EXE = PYTHON_DIR / "python.exe"
 
-# Your main Streamlit app file (must exist or be downloaded separately)
-MAIN_APP_FILE = "start_nemo_library_ui.py"
-
 # Python packages to install
 REQUIRED_PACKAGES = [
     "streamlit",
@@ -156,7 +153,7 @@ def ensure_requirements():
     )
 
 
-def ensure_correct_file_version(filepath:str):
+def ensure_correct_file_version(filepath: str):
     """Ensures the local app file matches the latest version on GitHub."""
 
     def get_latest_commit_hash():
@@ -175,20 +172,18 @@ def ensure_correct_file_version(filepath:str):
             logging.warning(f"Failed to fetch latest commit hash: {e}")
         return None
 
-
     def get_local_file_hash():
         """Calculates the SHA-1 hash of the local file."""
-        if filepath.exists():
+        local_path = APP_DIR / filepath
+
+        if local_path.exists():
             sha1 = hashlib.sha1()
-            with open(filepath, "rb") as f:
+            with open(local_path, "rb") as f:
                 while chunk := f.read(8192):
                     sha1.update(chunk)
             return sha1.hexdigest()
         return None
 
-
-
-    app_path = APP_DIR / MAIN_APP_FILE
     latest_commit_hash = get_latest_commit_hash()
     local_file_hash = get_local_file_hash()
 
@@ -198,9 +193,7 @@ def ensure_correct_file_version(filepath:str):
         logging.info(
             "App file is outdated or missing. Downloading the latest version..."
         )
-        url = (
-            f"https://raw.githubusercontent.com/{GITHUB_REPO}/master/{filepath}"
-        )
+        url = f"https://raw.githubusercontent.com/{GITHUB_REPO}/master/{filepath}"
         logging.info(f"Downloading from {url}...")
         urllib.request.urlretrieve(url, app_path)
         logging.info("App file updated.")
@@ -218,7 +211,7 @@ def main():
     logging.info("Bootstrapping Nemo Application...")
     ensure_python()
     ensure_pip()
-    ensure_correct_file_version("requirements.txt")  
+    ensure_correct_file_version("requirements.txt")
     # ensure_requirements()
     # run_app()
 
