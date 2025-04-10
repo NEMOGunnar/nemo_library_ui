@@ -17,7 +17,9 @@ SERVICE_NAME = "NemoLibraryUI"
 USERNAME = "<encryption_key>"
 PROFILES_FILE = Path.home() / ".nemo_app" / "profiles.json"
 
-current_script_name = Path(__file__).stem  # Get the current script name without extension
+current_script_name = Path(
+    __file__
+).stem  # Get the current script name without extension
 LOGFILE = Path.home() / ".nemo_app" / "logs" / f"{current_script_name}.log"
 
 logging.basicConfig(
@@ -257,8 +259,12 @@ with st.sidebar:
 
 if menu == "Nemo Library" and sub_menu == "Migration":
     st.header("Migration")
-    st.write(f"MigMan local project directory: {profiles[st.session_state['selected_profile']]['migman_local_project_directory']}")
-    st.write(f"ProALPHA project status file: {profiles[st.session_state['selected_profile']]['migman_proALPHA_project_status_file']}")
+    st.write(
+        f"MigMan local project directory: {profiles[st.session_state['selected_profile']]['migman_local_project_directory']}"
+    )
+    st.write(
+        f"ProALPHA project status file: {profiles[st.session_state['selected_profile']]['migman_proALPHA_project_status_file']}"
+    )
     tabs = st.tabs(
         [
             "Create Project Template",
@@ -267,10 +273,10 @@ if menu == "Nemo Library" and sub_menu == "Migration":
             "Create Mapping",
             "Load Mapping",
             "Apply Mapping",
-            "Export Data"
+            "Export Data",
         ]
     )  # Create tabs for different functionalities
-    with tabs[0]: # create project template
+    with tabs[0]:  # create project template
         st.subheader("Create Project Template")
         if st.button("Create Project Template"):
             try:

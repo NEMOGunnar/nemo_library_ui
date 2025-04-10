@@ -11,7 +11,9 @@ import socket
 import atexit
 
 # Configure logging
-current_script_name = Path(__file__).stem  # Get the current script name without extension
+current_script_name = Path(
+    __file__
+).stem  # Get the current script name without extension
 LOGFILE = Path.home() / ".nemo_app" / "logs" / f"{current_script_name}.log"
 logging.basicConfig(
     level=logging.INFO,
@@ -50,6 +52,7 @@ def get_url_from_log(stream):
             logging.error("Stream is closed or invalid.")
     return None
 
+
 def cleanup():
     """Terminate the Streamlit process when the program exits."""
     if streamlit_proc.poll() is None:  # Check if the process is still running
@@ -58,12 +61,15 @@ def cleanup():
             streamlit_proc.terminate()
             streamlit_proc.wait(timeout=5)
         except subprocess.TimeoutExpired:
-            logging.warning("Streamlit process did not terminate in time. Forcing termination...")
+            logging.warning(
+                "Streamlit process did not terminate in time. Forcing termination..."
+            )
             streamlit_proc.kill()  # Forcefully kill the process
         except Exception as e:
             logging.error(f"Error while terminating Streamlit process: {e}")
         else:
             logging.info("Streamlit process terminated.")
+
 
 # Start Streamlit in the background without a terminal window (Windows-specific)
 streamlit_proc = subprocess.Popen(
@@ -80,7 +86,7 @@ streamlit_proc = subprocess.Popen(
     stderr=subprocess.PIPE,
     creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
 )
-logging.info("Streamlit process started.")  
+logging.info("Streamlit process started.")
 
 # Register the cleanup function
 atexit.register(cleanup)
@@ -103,7 +109,7 @@ while not streamlit_proc.stdout and not streamlitport:
 logging.info(f"Streamlit started on port {streamlitport}")
 
 # Wait for the port to be open
-while not is_port_open('127.0.0.1', streamlitport):
+while not is_port_open("127.0.0.1", streamlitport):
     time.sleep(0.1)
     logging.info("Waiting for Streamlit Port to open...")
 

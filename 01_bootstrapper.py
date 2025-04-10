@@ -8,7 +8,9 @@ import shutil  # Add this import for recursive directory removal
 import requests  # Add this import for GitHub API requests
 
 # Configure logging
-current_script_name = Path(__file__).stem  # Get the current script name without extension
+current_script_name = Path(
+    __file__
+).stem  # Get the current script name without extension
 LOGFILE = Path.home() / ".nemo_app" / "logs" / f"{current_script_name}.log"
 
 # Ensure the directory for the log file exists
@@ -195,11 +197,13 @@ def ensure_correct_file_version(filepath: str):
 def run_app():
     """Launches the Streamlit application."""
     logging.info("Launching NEMO UI app...")
-    subprocess.Popen([str(PYTHON_EXE), "02_start_nemo_library_ui.py"], cwd=APP_DIR,
-                             stdout=subprocess.PIPE,  
-        stderr=subprocess.PIPE,  
+    subprocess.Popen(
+        [str(PYTHON_EXE), "02_start_nemo_library_ui.py"],
+        cwd=APP_DIR,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
         universal_newlines=True,
-)
+    )
 
 
 def main():
