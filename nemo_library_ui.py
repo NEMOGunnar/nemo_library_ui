@@ -16,11 +16,11 @@ def login():
         environment = st.selectbox(
             "Select Environment",
             ("prod", "test", "dev", "challenge", "demo"),
-            index=3,
+            index=0,
         )
-        tenant = st.text_input("Tenant", value="mig")
-        userid = st.text_input("Username", value="schug_g_mig")
-        password = st.text_input("Password", type="password", value="totvy8-xurpap-nusZiq")
+        tenant = st.text_input("Tenant")
+        userid = st.text_input("Username")
+        password = st.text_input("Password", type="password")
         submitted = st.form_submit_button("Login")
 
         if submitted:
