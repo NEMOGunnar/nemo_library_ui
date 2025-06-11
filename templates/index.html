@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<script>
+    setInterval(() => {
+        fetch("/heartbeat").catch(err => console.warn("Lost connection"));
+    }, 3000);
+</script>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NEMO Version</title>
+</head>
+<body>
+    <h1>NEMO Library Version</h1>
+    <p>Installed version: <strong>{{ version }}</strong></p>
+</body>
+</html>
