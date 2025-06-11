@@ -25,6 +25,7 @@ except Exception:
     version = "Unknown"
     import traceback
     traceback.print_exc()
+    raise RuntimeError("Failed to import nemo_library. Please ensure it is installed correctly.")
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
