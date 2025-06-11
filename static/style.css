@@ -4,17 +4,9 @@ body {
     color: #333;
     margin: 2rem;
 }
-
 h1 {
     color: #005baa;
-    border-bottom: 2px solid #ccc;
-    padding-bottom: 0.5rem;
 }
-
-p {
-    font-size: 1.2rem;
-}
-
 strong {
     color: #007744;
 }

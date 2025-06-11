@@ -1,16 +1,30 @@
 <!DOCTYPE html>
-<script>
-    setInterval(() => {
-        fetch("/heartbeat").catch(err => console.warn("Lost connection"));
-    }, 3000);
-</script>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>NEMO Version</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <h1>NEMO Library Version</h1>
     <p>Installed version: <strong>{{ version }}</strong></p>
+
+    <p><small>This window will shut down the backend automatically after closing.</small></p>
+
+    <script>
+        console.log("📡 Starting heartbeat...");
+        let counter = 0;
+        const intervalId = setInterval(() => {
+            fetch("/heartbeat")
+                .then(() => {
+                    counter++;
+                    console.log("❤️ heartbeat sent", counter);
+                })
+                .catch(err => {
+                    console.warn("💔 heartbeat failed", err);
+                    clearInterval(intervalId);
+                });
+        }, 3000);
+    </script>
 </body>
 </html>
