@@ -1,30 +1,23 @@
-import subprocess
-import sys
-import webbrowser
+import os
 import time
 import socket
 import threading
-import os
+import webbrowser
 from datetime import datetime, timezone
-from urllib.request import urlopen
-from urllib.error import URLError
-
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import uvicorn
 
-# === Import version info ===
+# Try to import the library and version
 try:
     from nemo_library import NemoLibrary
     version = NemoLibrary.__version__
 except Exception:
     version = "Unknown"
-    import traceback
-    traceback.print_exc()
 
-# === Heartbeat monitor (thread-safe) ===
+# === Heartbeat monitor ===
 class HeartbeatMonitor:
     def __init__(self):
         self._lock = threading.Lock()
@@ -36,8 +29,7 @@ class HeartbeatMonitor:
 
     def too_old(self, max_age_seconds: int) -> bool:
         with self._lock:
-            elapsed = (datetime.now(timezone.utc) - self._last_ping).total_seconds()
-            return elapsed > max_age_seconds
+            return (datetime.now(timezone.utc) - self._last_ping).total_seconds() > max_age_seconds
 
 monitor = HeartbeatMonitor()
 
@@ -55,44 +47,44 @@ def heartbeat():
     monitor.ping()
     return {"status": "ok"}
 
-# === Server management helpers ===
 def find_free_port():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.bind(('', 0))
+        s.bind(("", 0))
         return s.getsockname()[1]
 
 def wait_for_server(url: str, timeout: float = 10.0):
-    start_time = time.time()
+    import urllib.request
+    import urllib.error
+    start = time.time()
     while True:
         try:
-            urlopen(url)
+            urllib.request.urlopen(url)
             return True
-        except URLError:
-            if time.time() - start_time > timeout:
-                print(f"⚠️ Server did not start within {timeout} seconds.")
+        except urllib.error.URLError:
+            if time.time() - start > timeout:
                 return False
             time.sleep(0.3)
 
-def run_server(port: int):
-    uvicorn.run(app=app, host="127.0.0.1", port=port, reload=False)
-    
-def monitor_heartbeat(timeout_seconds=15):
+def monitor_heartbeat(timeout=15):
     while True:
-        time.sleep(timeout_seconds)
-        if monitor.too_old(timeout_seconds):
-            print("💀 No heartbeat detected, shutting down...")
+        time.sleep(timeout)
+        if monitor.too_old(timeout):
+            print("💀 No heartbeat received – shutting down.")
             os._exit(0)
 
-# === Main execution ===
-if __name__ == "__main__":
+def start_ui(open_browser=True):
     port = find_free_port()
     url = f"http://127.0.0.1:{port}"
 
-    threading.Thread(target=run_server, args=(port,), daemon=True).start()
     threading.Thread(target=monitor_heartbeat, daemon=True).start()
+    threading.Thread(target=lambda: uvicorn.run(app=app, host="127.0.0.1", port=port), daemon=True).start()
 
     if wait_for_server(url):
-        webbrowser.open(url)
+        if open_browser:
+            webbrowser.open(url)
 
     while True:
         time.sleep(1)
+
+if __name__ == "__main__":
+    start_ui()
