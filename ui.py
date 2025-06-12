@@ -9,13 +9,9 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import uvicorn
+from nemo_library import NemoLibrary
 
-# Try to import the library and version
-try:
-    from nemo_library import NemoLibrary
-    version = NemoLibrary.__version__
-except Exception:
-    version = "Unknown"
+version = NemoLibrary.__version__
 
 # === Heartbeat monitor ===
 class HeartbeatMonitor:
