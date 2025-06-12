@@ -4,12 +4,17 @@ import socket
 import threading
 import webbrowser
 from datetime import datetime, timezone
+from pathlib import Path
+import importlib.resources
+
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import uvicorn
+
 from nemo_library import NemoLibrary
+import nemo_library_ui  # needed for static/templates resolution
 
 version = NemoLibrary.__version__
 
@@ -29,10 +34,15 @@ class HeartbeatMonitor:
 
 monitor = HeartbeatMonitor()
 
+# === Paths to static/templates inside installed package ===
+package_dir = Path(nemo_library_ui.__file__).parent
+static_dir = package_dir / "static"
+templates_dir = package_dir / "templates"
+
 # === FastAPI setup ===
 app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
+templates = Jinja2Templates(directory=str(templates_dir))
 
 @app.get("/", response_class=HTMLResponse)
 def read_root(request: Request):
@@ -65,7 +75,7 @@ def monitor_heartbeat(timeout=15):
     while True:
         time.sleep(timeout)
         if monitor.too_old(timeout):
-            print("💀 No heartbeat received – shutting down.")
+            print("No heartbeat received – shutting down.")
             os._exit(0)
 
 def start_ui(open_browser=True):

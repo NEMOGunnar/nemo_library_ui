@@ -1,8 +1,11 @@
 from setuptools import setup, find_packages
 
+# Import the version from nemo_library.version
+from nemo_library_ui.version import __version__
+
 setup(
     name="nemo_library_ui",
-    version="0.1.0",
+    version=__version__,
     author="Gunnar Schug",
     author_email="gunnar.schug@nemo-ai.com",
     description="UI for the NEMO Python library",
