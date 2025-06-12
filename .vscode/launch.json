@@ -5,7 +5,7 @@
         "name": "Run UI",
         "type": "python",
         "request": "launch",
-        "program": "${workspaceFolder}/ui.py",
+        "program": "${workspaceFolder}/nemo_library_ui/ui.py",
         "cwd": "${workspaceFolder}",
         "console": "integratedTerminal"
       }
