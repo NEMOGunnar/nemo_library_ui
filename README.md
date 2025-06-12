@@ -1,2 +1,3 @@
 # nemo_library_ui
-UI for NEMO-Lib
+
+A web-based UI for the NEMO AI library using FastAPI and Jinja2.

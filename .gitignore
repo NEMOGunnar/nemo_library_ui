@@ -173,3 +173,5 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 .gitignore
+config_twine_prod.sh
+config_twine_test.sh
