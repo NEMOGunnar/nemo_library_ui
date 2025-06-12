@@ -18,5 +18,5 @@ setup(
             "nemo-ui = ui:start_ui"
         ]
     },
-    python_requires=">=3.11",
+    python_requires=">=3.13",
 )
